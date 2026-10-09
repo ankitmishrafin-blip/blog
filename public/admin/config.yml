@@ -18,10 +18,9 @@ backend:
   # Deploy the official `sveltia-cms-auth` Worker and put its URL here. See DEPLOYMENT.md.
   base_url: https://REPLACE-WITH-YOUR-AUTH-WORKER.workers.dev
 
-# Do not use Sveltia's built-in media-library Git backend for uploads here; local
-# media is committed to the repo under the paths configured per collection below.
-media_library:
-  name: null
+# Uploads use Sveltia's default internal (Git-backed) media storage: files are
+# committed to the repo under the media_folder/public_folder paths configured
+# per collection field below. No external provider, so no `media_library` key.
 
 # Human-readable site URL for previews.
 site_url: https://blog.ankitmishraofficial.com
