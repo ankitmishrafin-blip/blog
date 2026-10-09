@@ -17,6 +17,8 @@ backend:
   # The Cloudflare Worker that performs the GitHub OAuth flow and hands back a token.
   # Deploy the official `sveltia-cms-auth` Worker and put its URL here. See DEPLOYMENT.md.
   base_url: https://REPLACE-WITH-YOUR-AUTH-WORKER.workers.dev
+media_folder: public/uploads
+public_folder: /uploads
 
 # Uploads use Sveltia's default internal (Git-backed) media storage: files are
 # committed to the repo under the media_folder/public_folder paths configured
@@ -47,8 +49,6 @@ collections:
         # Uploads are committed into `public/uploads/` and inserted in the body
         # as served paths (e.g. `![alt](/uploads/photo.jpg)`), which render as
         # plain <img> tags with no build-time resolution.
-        media_folder: 'public/uploads'
-        public_folder: '/uploads'
       - label: Tags
         name: tags
         widget: list
@@ -83,5 +83,3 @@ collections:
         # Uploads are committed into `public/uploads/` and inserted in the body
         # as served paths (e.g. `![alt](/uploads/photo.jpg)`), which render as
         # plain <img> tags with no build-time resolution.
-        media_folder: 'public/uploads'
-        public_folder: '/uploads'
