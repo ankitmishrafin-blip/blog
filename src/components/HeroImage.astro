@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import type { HeroImage } from '../utils/hero';
+import { isLocalImage } from '../utils/hero';
+
+interface Props {
+  image: HeroImage;
+  alt: string;
+  class?: string;
+  widths?: number[];
+  sizes?: string;
+  quality?: number;
+  loading?: 'lazy' | 'eager';
+}
+
+const {
+  image,
+  alt,
+  class: className,
+  widths = [400, 720, 960, 1280, 1600],
+  sizes = '(max-width: 600px) calc(100vw - 32px), 45vw',
+  quality = 88,
+  loading = 'lazy',
+} = Astro.props;
+---
+
+{
+  isLocalImage(image) ? (
+    <Image
+      src={image}
+      alt={alt}
+      class={className}
+      widths={widths}
+      sizes={sizes}
+      quality={quality}
+      loading={loading}
+    />
+  ) : image ? (
+    <img
+      src={image}
+      alt={alt}
+      class={className}
+      width={1200}
+      height={630}
+      loading={loading}
+      decoding="async"
+    />
+  ) : null
+}

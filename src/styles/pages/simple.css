@@ -1,0 +1,153 @@
+/* Shared layout for the simpler editorial pages:
+   Notes index, Tags index, Archive, and individual notes.
+   Reuses the theme's spacing, type, and color tokens. */
+
+.simple-main {
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  padding: var(--space-20) var(--space-6) var(--space-24);
+}
+
+.simple-header {
+  max-width: var(--max-width-content);
+  padding-bottom: var(--space-10);
+  margin-bottom: var(--space-6);
+}
+
+.simple-label.eyebrow-accent {
+  margin: 0 0 var(--space-2);
+  font-weight: var(--weight-accent-label);
+}
+
+.simple-title {
+  font-size: clamp(2.125rem, 5vw, 2.875rem);
+  font-weight: 650;
+  letter-spacing: -0.016em;
+  margin: 0;
+  line-height: 1.04;
+}
+
+.simple-lead {
+  margin: var(--space-4) 0 0;
+  color: var(--label-secondary);
+  font-size: var(--text-callout);
+  line-height: var(--leading-normal);
+  max-width: 52ch;
+}
+
+.simple-body {
+  max-width: var(--max-width-content);
+}
+
+/* ── Entry list (notes, archive) ───────────────── */
+.entry-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.entry-row {
+  display: block;
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--separator);
+  color: inherit;
+  text-decoration: none;
+}
+
+.entry-list .entry-row:last-child {
+  border-bottom: 1px solid var(--separator);
+}
+
+.entry-date {
+  display: block;
+  color: var(--label-tertiary);
+  font-size: var(--text-footnote);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: var(--space-2);
+}
+
+.entry-title {
+  margin: 0;
+  color: var(--label-primary);
+  font-size: var(--text-title-3);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  letter-spacing: -0.012em;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.entry-row:hover .entry-title {
+  color: var(--color-blue);
+}
+
+.entry-desc {
+  margin: var(--space-2) 0 0;
+  color: var(--label-secondary);
+  font-size: var(--text-callout);
+  line-height: var(--leading-normal);
+  max-width: 62ch;
+}
+
+.entry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.entry-tag {
+  color: var(--label-tertiary);
+  font-size: var(--text-caption-2);
+  letter-spacing: 0.01em;
+}
+
+.entry-tag::before {
+  content: '#';
+  color: var(--label-quaternary);
+  margin-right: 2px;
+}
+
+/* ── Topic grid (tags index) ───────────────────── */
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+  gap: var(--space-3) var(--space-6);
+}
+
+.topic-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--separator);
+  color: var(--label-primary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.topic-link:hover {
+  color: var(--color-blue);
+}
+
+.topic-name::before {
+  content: '#';
+  color: var(--label-quaternary);
+  margin-right: 4px;
+}
+
+.topic-count {
+  color: var(--label-tertiary);
+  font-size: var(--text-footnote);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .simple-main {
+    padding: var(--space-12) var(--space-4) var(--space-16);
+  }
+
+  .entry-row {
+    padding: var(--space-5) 0;
+  }
+}

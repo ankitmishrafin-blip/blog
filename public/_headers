@@ -1,0 +1,20 @@
+# Cloudflare Pages security & caching headers.
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# Astro emits content-hashed assets under /_astro/ — cache them aggressively.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Pagefind search index — long but safe to cache.
+/pagefind/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Keep the CMS entry out of search engines. The Sveltia SPA also sets noindex.
+/admin/*
+  X-Robots-Tag: noindex

@@ -1,0 +1,88 @@
+# Sveltia CMS configuration for Ankit Mishra's blog.
+#
+# Served statically at https://blog.ankitmishraofficial.com/admin/config.yml
+# This file contains only PUBLIC values. The GitHub OAuth *Client ID* is public by
+# design; the *Client Secret* lives only as an encrypted environment variable on the
+# `sveltia-cms-auth` Cloudflare Worker and never appears here or in any bundle.
+#
+# The `backend.repo` below MUST match your real GitHub repository. Update the
+# owner/repo to your own account/repository before first use.
+
+backend:
+  name: github
+  # Change these two to your GitHub username and the blog repository name.
+  repo: ankitmishrafin-blip/blog
+  # Branch that stores the Markdown/MDX source of truth.
+  branch: main
+  # The Cloudflare Worker that performs the GitHub OAuth flow and hands back a token.
+  # Deploy the official `sveltia-cms-auth` Worker and put its URL here. See DEPLOYMENT.md.
+  base_url: https://REPLACE-WITH-YOUR-AUTH-WORKER.workers.dev
+
+# Do not use Sveltia's built-in media-library Git backend for uploads here; local
+# media is committed to the repo under the paths configured per collection below.
+media_library:
+  name: null
+
+# Human-readable site URL for previews.
+site_url: https://blog.ankitmishraofficial.com
+
+collections:
+  # ── Posts (articles & essays) ──────────────────────────────────────────────
+  - name: posts
+    label: Posts
+    label_singular: Post
+    folder: src/content/posts
+    format: frontmatter
+    extension: mdx
+    create: true
+    slug: '{{title}}'
+    # Preview draft/published state; published articles are rendered by Astro.
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: string, required: false }
+      - { label: Publish Date, name: pubDate, widget: datetime, format: 'YYYY-MM-DD', time_format: false }
+      - { label: Updated Date, name: updatedDate, widget: datetime, required: false, format: 'YYYY-MM-DD', time_format: false }
+      - label: Body (with images)
+        name: body
+        widget: markdown
+        # Uploads are committed into `public/uploads/` and inserted in the body
+        # as served paths (e.g. `![alt](/uploads/photo.jpg)`), which render as
+        # plain <img> tags with no build-time resolution.
+        media_folder: 'public/uploads'
+        public_folder: '/uploads'
+      - label: Tags
+        name: tags
+        widget: list
+        required: false
+        field: { label: Tag, name: tag, widget: string }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+      - { label: Featured on home, name: homeFeatured, widget: boolean, default: false }
+
+  # ── Notes (short-form) ─────────────────────────────────────────────────────
+  - name: notes
+    label: Notes
+    label_singular: Note
+    folder: src/content/notes
+    format: frontmatter
+    extension: mdx
+    create: true
+    slug: '{{title}}'
+    fields:
+      - { label: Title, name: title, widget: string, required: false }
+      - { label: Description, name: description, widget: string, required: false }
+      - { label: Publish Date, name: pubDate, widget: datetime, format: 'YYYY-MM-DD', time_format: false }
+      - { label: Updated Date, name: updatedDate, widget: datetime, required: false, format: 'YYYY-MM-DD', time_format: false }
+      - label: Tags
+        name: tags
+        widget: list
+        required: false
+        field: { label: Tag, name: tag, widget: string }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+      - label: Body (with images)
+        name: body
+        widget: markdown
+        # Uploads are committed into `public/uploads/` and inserted in the body
+        # as served paths (e.g. `![alt](/uploads/photo.jpg)`), which render as
+        # plain <img> tags with no build-time resolution.
+        media_folder: 'public/uploads'
+        public_folder: '/uploads'

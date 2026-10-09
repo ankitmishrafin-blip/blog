@@ -1,0 +1,53 @@
+---
+import '../../styles/pages/simple.css';
+import FormattedDate from '../../components/FormattedDate.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../utils/paths';
+import { getTags, getEntriesByTag } from '../../utils/tags';
+
+export async function getStaticPaths() {
+  const tags = await getTags();
+  return tags.map(({ tag }) => ({ params: { tag }, props: { tag } }));
+}
+
+interface Props {
+  tag: string;
+}
+
+const { tag } = Astro.props;
+const entries = await getEntriesByTag(tag);
+---
+
+<BaseLayout title={`#${tag}`} description={`Writing tagged “${tag}”.`}>
+  <main id="main-content" class="simple-main">
+    <div class="simple-header">
+      <p class="simple-label eyebrow-accent">Topic</p>
+      <h1 class="simple-title">#{tag}</h1>
+      <p class="simple-lead">
+        {entries.length} {entries.length === 1 ? 'entry' : 'entries'} tagged “{tag}”.
+      </p>
+    </div>
+
+    <div class="simple-body">
+      {
+        entries.length > 0 ? (
+          <div class="entry-list">
+            {entries.map(({ entry, url, isPost }) => (
+              <a href={withBase(url)} class="entry-row">
+                <span class="entry-date">
+                  <FormattedDate date={entry.data.pubDate} />
+                  <span class="dot">·</span>
+                  {isPost ? 'Post' : 'Note'}
+                </span>
+                <h2 class="entry-title">{entry.data.title || 'Untitled'}</h2>
+                {entry.data.description && <p class="entry-desc">{entry.data.description}</p>}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="entry-desc">Nothing here yet.</p>
+        )
+      }
+    </div>
+  </main>
+</BaseLayout>

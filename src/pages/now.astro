@@ -1,0 +1,33 @@
+---
+import '../styles/pages/simple.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Now" description="What I am currently exploring, working on, and learning.">
+  <main id="main-content" class="simple-main">
+    <div class="simple-header">
+      <p class="simple-label eyebrow-accent">Now</p>
+      <h1 class="simple-title">Now</h1>
+      <p class="simple-lead">
+        What I am currently exploring, working on, and reading. Updated occasionally.
+      </p>
+    </div>
+
+    <div class="simple-body">
+      <div class="entry-list">
+        <div class="entry-row" style="cursor: default;">
+          <span class="entry-date">Placeholder</span>
+          <h2 class="entry-title">What I am exploring</h2>
+          <p class="entry-desc">
+            This is a placeholder. I will write here about what I am currently working on,
+            learning, and reading. Keep it honest and current.
+          </p>
+        </div>
+      </div>
+
+      <p class="entry-desc" style="margin-top: var(--space-8); color: var(--label-tertiary);">
+        To edit this page, open <code>src/pages/now.astro</code>.
+      </p>
+    </div>
+  </main>
+</BaseLayout>

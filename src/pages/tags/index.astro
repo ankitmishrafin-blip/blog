@@ -1,0 +1,39 @@
+---
+import '../../styles/pages/simple.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getUiText } from '../../ui';
+import { withBase } from '../../utils/paths';
+import { getTags } from '../../utils/tags';
+
+const tr = getUiText();
+const tags = await getTags();
+---
+
+<BaseLayout title={tr.tagsTitle} description="Browse all writing by topic.">
+  <main id="main-content" class="simple-main">
+    <div class="simple-header">
+      <p class="simple-label eyebrow-accent">Topics</p>
+      <h1 class="simple-title">{tr.tagsTitle}</h1>
+      <p class="simple-lead">{tr.tagsLead}</p>
+    </div>
+
+    <div class="simple-body">
+      {
+        tags.length > 0 ? (
+          <div class="topic-grid">
+            {tags.map(({ tag, count }) => (
+              <a href={withBase(`/tags/${tag}/`)} class="topic-link">
+                <span class="topic-name">{tag}</span>
+                <span class="topic-count">
+                  {count} {count === 1 ? 'entry' : 'entries'}
+                </span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="entry-desc">No topics yet.</p>
+        )
+      }
+    </div>
+  </main>
+</BaseLayout>

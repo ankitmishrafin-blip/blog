@@ -1,0 +1,131 @@
+---
+import '../../styles/layouts/post.css';
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import readingTimeLib from 'reading-time';
+import FormattedDate from '../../components/FormattedDate.astro';
+import ImageLightbox from '../../components/ImageLightbox.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_TITLE, SITE_AUTHOR, SITE_LANG } from '../../consts';
+import { getUiText } from '../../ui';
+import { withBase } from '../../utils/paths';
+import { serializeScriptJson } from '../../utils/serialize-script-json';
+
+const tr = getUiText();
+
+export async function getStaticPaths() {
+  const notes = (await getCollection('notes'))
+    .filter((n) => !n.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  return notes.map((note) => ({
+    params: { slug: note.id },
+    props: { note },
+  }));
+}
+
+interface Props {
+  note: CollectionEntry<'notes'>;
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+const readingTime = Math.max(1, Math.round(readingTimeLib(note.body ?? '').minutes));
+const title = note.data.title || 'Note';
+const description = note.data.description ?? SITE_TITLE;
+const pubDateISO = note.data.pubDate.toISOString();
+const updatedDateISO = note.data.updatedDate?.toISOString();
+const canonicalURL = new URL(withBase(`/notes/${note.id}/`), Astro.site);
+const jsonLd = serializeScriptJson({
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: pubDateISO,
+  ...(updatedDateISO && { dateModified: updatedDateISO }),
+  url: canonicalURL.href,
+  author: { '@type': 'Person', name: SITE_AUTHOR },
+  publisher: { '@type': 'Organization', name: SITE_TITLE },
+  inLanguage: SITE_LANG,
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  pubDate={pubDateISO}
+  updatedDate={updatedDateISO}
+  bodyClass="post-page"
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={jsonLd} />
+  </Fragment>
+
+  <main id="main-content" class="post-main">
+    <article data-pagefind-body>
+      <a href={withBase('/notes')} class="back-link">{tr.notesViewAll}</a>
+
+      <header class="post-header">
+        <div class="post-accent"></div>
+        <div class="post-meta">
+          <FormattedDate class="meta-date" date={note.data.pubDate} />
+          <span class="dot">·</span>
+          <span class="meta-item">{tr.readingTime(readingTime)}</span>
+          {
+            note.data.updatedDate && (
+              <>
+                <span class="dot">·</span>
+                <span class="meta-updated">
+                  {tr.updated} <FormattedDate date={note.data.updatedDate} />
+                </span>
+              </>
+            )
+          }
+        </div>
+        <h1 class="post-title" data-pagefind-meta="title">{title}</h1>
+        {note.data.description && <p class="post-description">{note.data.description}</p>}
+        {
+          note.data.tags.length > 0 && (
+            <p class="post-note-tags">
+              {note.data.tags.map((tag) => (
+                <a href={withBase(`/tags/${tag}/`)} class="post-note-tag">{tag}</a>
+              ))}
+            </p>
+          )
+        }
+      </header>
+
+      <div class="post-divider"></div>
+
+      <div class="prose" id="prose-content">
+        <Content />
+      </div>
+    </article>
+  </main>
+  <ImageLightbox />
+</BaseLayout>
+
+<style>
+  .post-note-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+  }
+
+  .post-note-tag {
+    color: var(--color-blue);
+    font-size: var(--text-footnote);
+    text-decoration: none;
+  }
+
+  .post-note-tag::before {
+    content: '#';
+    color: var(--label-quaternary);
+    margin-right: 2px;
+  }
+
+  .post-note-tag:hover {
+    opacity: 0.75;
+  }
+</style>

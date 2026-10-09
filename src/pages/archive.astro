@@ -1,0 +1,58 @@
+---
+import '../styles/pages/simple.css';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getUiText } from '../ui';
+import { withBase } from '../utils/paths';
+
+const tr = getUiText();
+
+const [posts, notes] = await Promise.all([getCollection('posts'), getCollection('notes')]);
+const postIds = new Set(posts.map((p) => p.id));
+
+type Row = { title: string; date: Date; url: string; kind: 'Post' | 'Note'; description?: string };
+
+const rows: Row[] = [...posts, ...notes]
+  .filter((entry) => !entry.data.draft)
+  .map((entry) => ({
+    title: entry.data.title || 'Untitled',
+    date: entry.data.pubDate,
+    url: postIds.has(entry.id) ? `/posts/${entry.id}/` : `/notes/${entry.id}/`,
+    kind: postIds.has(entry.id) ? ('Post' as const) : ('Note' as const),
+    description: entry.data.description,
+  }))
+  .sort((a, b) => b.date.valueOf() - a.date.valueOf());
+---
+
+<BaseLayout title={tr.archiveTitle} description="Everything I have written, in chronological order.">
+  <main id="main-content" class="simple-main">
+    <div class="simple-header">
+      <p class="simple-label eyebrow-accent">Archive</p>
+      <h1 class="simple-title">{tr.archiveTitle}</h1>
+      <p class="simple-lead">{tr.archiveLead}</p>
+    </div>
+
+    <div class="simple-body">
+      {
+        rows.length > 0 ? (
+          <div class="entry-list">
+            {rows.map((row) => (
+              <a href={withBase(row.url)} class="entry-row">
+                <span class="entry-date">
+                  <FormattedDate date={row.date} />
+                  <span class="dot">·</span>
+                  {row.kind}
+                </span>
+                <h2 class="entry-title">{row.title}</h2>
+                {row.description && <p class="entry-desc">{row.description}</p>}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="entry-desc">Nothing archived yet.</p>
+        )
+      }
+    </div>
+  </main>
+</BaseLayout>

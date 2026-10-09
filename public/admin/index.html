@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Keep the CMS editor out of search engines. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>CMS — Ankit Mishra</title>
+  </head>
+  <body style="margin: 0">
+    <!--
+      Sveltia CMS entry point (static, no build step).
+
+      Served at https://blog.ankitmishraofficial.com/admin/
+
+      This is a self-contained single-page app loaded from the official CDN.
+      It contains NO secrets. The GitHub OAuth *Client ID* below (none needed
+      here) is public by design; authentication runs through the Cloudflare
+      `sveltia-cms-auth` Worker whose URL is set as `base_url` in config.yml.
+      The GitHub OAuth *Client Secret* lives only as an encrypted environment
+      variable on that Worker and never reaches the browser.
+
+      See DEPLOYMENT.md for the one-time Worker + OAuth setup.
+    -->
+    <div id="sveltia-cms" style="min-height: 100vh"></div>
+
+    <!-- Load the CMS from the official CDN. -->
+    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js" type="module"></script>
+  </body>
+</html>

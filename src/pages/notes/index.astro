@@ -1,0 +1,45 @@
+---
+import '../../styles/pages/simple.css';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_DESCRIPTION } from '../../consts';
+import { getUiText } from '../../ui';
+import { withBase } from '../../utils/paths';
+
+const tr = getUiText();
+
+const notes = (await getCollection('notes'))
+  .filter((n) => !n.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={tr.notesTitle} description={SITE_DESCRIPTION}>
+  <main id="main-content" class="simple-main">
+    <div class="simple-header">
+      <p class="simple-label eyebrow-accent">{tr.notesEyebrow}</p>
+      <h1 class="simple-title">{tr.notesTitle}</h1>
+      <p class="simple-lead">{tr.notesLead}</p>
+    </div>
+
+    <div class="simple-body">
+      {
+        notes.length > 0 ? (
+          <div class="entry-list">
+            {notes.map((note) => (
+              <a href={withBase(`/notes/${note.id}/`)} class="entry-row">
+                <span class="entry-date">
+                  <FormattedDate date={note.data.pubDate} />
+                </span>
+                <h2 class="entry-title">{note.data.title || 'Untitled note'}</h2>
+                {note.data.description && <p class="entry-desc">{note.data.description}</p>}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="entry-desc">No notes yet.</p>
+        )
+      }
+    </div>
+  </main>
+</BaseLayout>

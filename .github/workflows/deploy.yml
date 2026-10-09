@@ -1,0 +1,51 @@
+# Cloudflare Pages deployment.
+#
+# Deploys the static `dist/` directory to Cloudflare Pages on every push to `main`.
+# Cloudflare Pages builds directly from GitHub; this workflow is the CI-friendly
+# alternative using the official wrangler action. If you connect the repo to a
+# Cloudflare Pages project in the dashboard instead, you can delete this file and
+# configure: Build command `npm run build`, Build output `dist`, Node 22.
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN   — API token with "Cloudflare Pages: Edit" permission
+#   CLOUDFLARE_ACCOUNT_ID  — your Cloudflare account ID
+# The project name must match a Pages project you create (or let the action create it).
+
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        env:
+          ASTRO_SITE_URL: https://blog.ankitmishraofficial.com
+          ASTRO_SITE_BASE: ''
+        run: npm run build
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=ankit-blog
+          # wrangler-action installs wrangler automatically when no package.json bin is present.
+

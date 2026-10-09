@@ -1,0 +1,36 @@
+---
+import '../styles/pages/simple.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getUiText } from '../ui';
+
+const tr = getUiText();
+---
+
+<BaseLayout title={tr.projectsTitle} description="Things I have built and experiments I am working on.">
+  <main id="main-content" class="simple-main">
+    <div class="simple-header">
+      <p class="simple-label eyebrow-accent">{tr.projectsEyebrow}</p>
+      <h1 class="simple-title">{tr.projectsTitle}</h1>
+      <p class="simple-lead">
+        A curated, hand-maintained list. This is a placeholder — I will fill in real projects here.
+      </p>
+    </div>
+
+    <div class="simple-body">
+      <div class="entry-list">
+        <div class="entry-row" style="cursor: default;">
+          <span class="entry-date">Placeholder</span>
+          <h2 class="entry-title">Your first project</h2>
+          <p class="entry-desc">
+            Replace this placeholder with a real project: a short description and a link. Keep it to
+            one or two lines each.
+          </p>
+        </div>
+      </div>
+
+      <p class="entry-desc" style="margin-top: var(--space-8); color: var(--label-tertiary);">
+        To edit this page, open <code>src/pages/projects.astro</code>.
+      </p>
+    </div>
+  </main>
+</BaseLayout>
